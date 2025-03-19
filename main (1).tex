@@ -1,0 +1,165 @@
+%------------%
+%  Preamble  %
+%------------%
+
+\documentclass[final,11pt]{article}
+\usepackage[paperwidth=9.0in, top=1.2in, bottom=1.2in, left=1.2in, right=1.2in]{geometry}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{mathpazo}
+\usepackage{threeparttable}
+\usepackage{eurosym}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage[colorlinks, linkcolor=blue, anchorcolor=blue, citecolor=blue]{hyperref}
+
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\arraycolsep}{10pt}
+\setlength\headheight{0.5cm}
+\setlength\headsep{0.8cm}
+\setlength\footskip{1.0cm}
+\setlength{\parindent}{0em}
+\pagestyle{fancy}
+\chead{\textcolor[rgb]{0.5,0.5,0.5}{\sc Spring 2025: ECON 6100}}
+
+%------------%
+%  Document  %
+%------------%
+
+\begin{document}
+\thispagestyle{empty}
+\begin{spacing}{1.25}
+
+\textbf{Martin Lavrinenko:\hfill Problem Set 2, Due: Mar. 18, 2025}\\
+
+(1) Use the probability integral transformation method to simulate from the distribution
+\begin{gather}
+    f(x) = 
+    \begin{cases}
+        \frac{2}{a^2}x,  & \text{if }0\leq x\leq a \\
+        0, & \text{otherwise}
+    \end{cases}
+\end{gather}
+where $a>0$. Set a value for $a$, simulate various sample sizes, and compare results to the true distribution.
+
+Solution 
+\begin{enumerate}
+    \item In order to solve this problem the following needs to be done. First we must take the given PDF equation and transform it into a CDF equation using integration. We will integrate the function from 0 to X as all values outside of this range are 0. Then, once we define the CDF we will need to find the inverse function. Once the inverse function is defined we will take a random sample from a uniform distribution. Using these values we will plug them into the inverse function we defined.
+
+    The CDF can be found by integrating the PDF from 0 to X
+    \begin{gather}
+        F(x) = \int_{0}^{x} \frac{2}{a^2} t \, dt
+    \end{gather}
+    We can factor out the constant:
+    \begin{gather}
+        F(x) = \frac{2}{a^2} \int_{0}^{x} t \, dt
+    \end{gather}
+    Now we take the antiderivative of \( t \):
+    \begin{gather}
+        \int t \, dt = \frac{t^2}{2}
+    \end{gather}
+    This gives:
+    \begin{gather}
+        F(x) = \frac{2}{a^2} \left[ \frac{t^2}{2} \right]_0^x
+    \end{gather}
+    Plugging in upper and lower limits:
+    \begin{gather}
+        F(x) = \frac{2}{a^2} \left( \frac{x^2}{2} - \frac{0^2}{2} \right)
+    \end{gather}
+    We are then left with 
+    \begin{gather}
+        F(x) = \frac{2}{a^2} * \frac{x^2}{2}
+    \end{gather}
+    Which can be simplified as 
+    \begin{gather}
+        F(x) = \frac{x^2}{a^2}
+    \end{gather}
+    As we will be using a uniform distribution we will define the following 
+    \begin{gather}
+        u=\frac{x^2}{a^2}
+    \end{gather}
+    We will then need to solve for x in terms of u. Starting by multiplying each side by $a^2$
+    \begin{gather}
+        u a^2=x^2
+    \end{gather}
+    We can then take the root of this entire expression and rearrange to put x first 
+    \begin{gather}
+        x=a\sqrt{u}
+    \end{gather}
+    Using this inverse function we can sample a distribution by first taking a sample from a uniform distribution and then transforming it with the inverse equation
+    \FloatBarrier
+    \begin{figure}[h]
+        \centering 
+        \includegraphics[width=0.5\linewidth]{HW2P11K.png}
+        \caption{Histogram of simulated distribution using inverse CDF method. SS=1,000}
+        \label{fig:SS1000}
+    \end{figure}
+    \FloatBarrier
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.5\linewidth]{HW2P110K.png}
+        \caption{Histogram of simulated distribution using inverse CDF method. SS=10,000}
+        \label{fig:SS10000}
+    \end{figure}
+    \FloatBarrier
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.5\linewidth]{HW2P1100K.png}
+        \caption{Histogram of simulated distribution using inverse CDF method. SS=100,000}
+        \label{fig:SS10000}
+    \end{figure}
+    As the number of simulated observations increases, the histogram of the simulated data approaches the shape of the true probability density function, which is a linear function over the interval $[0,a]$
+\end{enumerate}
+\newpage
+
+(2) Generate samples from the distribution
+\begin{gather}
+    f(x)=\frac{2}{3}e^{-2x}+2e^{-3x}
+\end{gather}
+using the finite mixture approach.
+\begin{enumerate}
+    \item In order to solve this problem, we first need to determine the weight of each term. The weights are initially \( \frac{2}{3} \) and 2, which will be normalized to 0.25 and 0.75, respectively. Next, we can observe that, rather than the distribution being comprised of two normal distributions as in the in-class example, this problem involves two exponential distributions. Therefore, we will need to adjust the code to allow us to sample from exponential distributions instead. Specifically, for each observation, we will randomly select which exponential distribution to sample from based on the normalized weights. After determining which component to use, we will sample from the corresponding exponential distribution, which have rate parameters \( \lambda = 2 \) and \( \lambda = 3 \), corresponding to scales of \( \frac{1}{2} \) and \( \frac{1}{3} \), respectively. Finally, we will generate and plot histograms of the simulated data for various sample sizes to compare the results.
+    \FloatBarrier
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.5\linewidth]{HW2P210K.png}
+        \caption{Histogram of simulated distribution. SS=10,000}
+        \label{fig:SS10000}
+    \end{figure}
+    \FloatBarrier
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.5\linewidth]{HW2P21M.png}
+        \caption{Histogram of simulated distribution. SS=1,000,000}
+        \label{fig:SS1000000}
+    \end{figure}
+    \FloatBarrier
+    As the sample size increases, the histogram closely approximates the shape of the true mixture distribution.
+\end{enumerate}
+\newpage
+
+(3) Draw 500 observations from Beta$(3,3)$ using the accept-reject algorithm. Compute the mean and variance of the sample and compare them to the true values.
+\begin{enumerate}
+    \item In order to solve this problem, we will use the accept-reject algorithm to generate 500 observations from the Beta(3,3) distribution. First, we define the target distribution, which is the Beta(3,3) probability density function. Next, we choose a simple proposal distribution that is easy to sample from; in this case, we use the Uniform(0,1) distribution. We then determine the appropriate scaling constant \( c \) by evaluating the ratio of the target density to the proposal density at the mode of the target distribution. After setting up the accept-reject sampling function, we repeatedly generate candidate samples from the proposal distribution and accept them based on the acceptance criterion involving the target and proposal densities. Once 500 observations are drawn, we compute the sample mean and variance. Finally, we compare the sample statistics to the true mean and variance of the Beta(3,3) distribution, which are \( 0.5 \) and \( 0.035714 \), respectively.
+    \FloatBarrier
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.5\linewidth]{HW2P3500.png}
+        \caption{Histogram of simulated distribution. 500 observations}
+        \label{fig:beta-500}
+    \end{figure}
+    Sample mean: 0.4996254654115793
+    
+    Sample variance: 0.035416819475811136
+
+    The sample mean is 0.4996 and the sample variance is 0.0354. Both the sample mean and variance closely approximate the true mean (0.5) and true variance (0.035714), differing only by small amounts in the thousandths place.
+\end{enumerate}
+
+\end{spacing}
+\end{document}
